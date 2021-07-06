@@ -7,12 +7,12 @@
         android:title="Beranda" />
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_lapor"
         android:icon="@drawable/bt_lapor"
         android:title="Lapor" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_profile"
         android:icon="@drawable/bt_profile"
         android:title="Akun" />
 
