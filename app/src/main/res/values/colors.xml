@@ -11,4 +11,5 @@
     <color name="grey_main">#A0A3B1</color>
     <color name="grey_light">#FAF8F5</color>
     <color name="grey_form">#F2F3F7</color>
+    <color name="grey_placeholder">#A1A4B2</color>
 </resources>

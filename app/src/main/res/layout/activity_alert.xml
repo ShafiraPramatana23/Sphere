@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".AlertActivity">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_alert"
+        android:layout_alignParentTop="true" />
+
+    <ImageView
+        android:id="@+id/icon_alert"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_150sdp"
+        android:layout_marginTop="@dimen/_130sdp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_success" />
+
+    <LinearLayout
+        android:id="@+id/textLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/icon_alert"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/_20sdp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/MessageTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/_15sdp"
+            android:fontFamily="@font/redhat_family"
+            android:text="title"
+            android:textColor="@color/black"
+            android:textSize="@dimen/_28sdp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/MessageDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:fontFamily="@font/redhat_family"
+            android:text="desc"
+            android:textColor="@color/grey_main"
+            android:textSize="@dimen/_15sdp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnFinish"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_40sdp"
+        android:fontFamily="@font/redhat_family"
+        android:background="@drawable/rounded_green"
+        android:padding="@dimen/_10sdp"
+        android:text="Finish"
+        android:textAllCaps="false"
+        android:textSize="@dimen/_14sdp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txtBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnFinish"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_centerHorizontal="true"
+        android:text="Kembali"
+        android:fontFamily="@font/redhat_family"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_14sdp"
+        android:clickable="true" />
+</RelativeLayout>
