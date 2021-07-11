@@ -35,11 +35,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:padding="@dimen/_15sdp"
+            android:paddingHorizontal="@dimen/_50sdp"
             android:fontFamily="@font/redhat_family"
             android:text="title"
             android:textColor="@color/black"
-            android:textSize="@dimen/_28sdp"
+            android:textSize="@dimen/_20sdp"
             android:textStyle="bold" />
 
         <TextView
@@ -48,9 +48,10 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:fontFamily="@font/redhat_family"
+            android:layout_marginTop="@dimen/_15sdp"
             android:text="desc"
             android:textColor="@color/grey_main"
-            android:textSize="@dimen/_15sdp" />
+            android:textSize="@dimen/_13sdp" />
 
     </LinearLayout>
 
@@ -66,7 +67,7 @@
         android:padding="@dimen/_10sdp"
         android:text="Finish"
         android:textAllCaps="false"
-        android:textSize="@dimen/_14sdp"
+        android:textSize="@dimen/_12sdp"
         android:textStyle="bold" />
 
     <TextView
@@ -79,6 +80,6 @@
         android:text="Kembali"
         android:fontFamily="@font/redhat_family"
         android:textColor="@color/black"
-        android:textSize="@dimen/_14sdp"
+        android:textSize="@dimen/_12sdp"
         android:clickable="true" />
 </RelativeLayout>
