@@ -91,7 +91,7 @@ public class LaporFragment extends Fragment {
             if (position == 0) {
                 return new StepOneFragment();
             } else if (position == 1) {
-                return new StepOneFragment();
+                return new StepTwoFragment();
             }
             return null;
         }

@@ -11,6 +11,20 @@
         android:paddingVertical="@dimen/_10sdp"
         android:paddingHorizontal="@dimen/_15sdp">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_200sdp"
+            android:orientation="vertical"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/imgMaps"
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </LinearLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,61 +33,50 @@
             android:paddingVertical="@dimen/_10sdp">
 
             <EditText
-                android:id="@+id/etJudul"
+                android:id="@+id/etLokasi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:fontFamily="@font/redhat_regular"
-                android:hint="Judul"
+                android:hint="Lokasi"
                 android:maxLines="1"
                 android:textColor="@color/black"
                 android:textColorHint="#3E4A59"
-                android:textSize="@dimen/_11sdp" />
+                android:textSize="@dimen/_13sdp" />
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_12sdp"
-            android:background="@drawable/rounded_form_grey"
-            android:paddingHorizontal="@dimen/_5sdp">
-
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_12sdp"
             android:background="@drawable/rounded_form_grey"
             android:paddingHorizontal="@dimen/_15sdp"
-            android:paddingVertical="@dimen/_10sdp">
+            android:paddingVertical="@dimen/_15sdp"
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/etDeskripsi"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_100sdp"
-                android:background="@null"
-                android:fontFamily="@font/redhat_regular"
-                android:gravity="top"
-                android:hint="Deskripsi"
-                android:maxLines="1"
+            <ImageView
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/ic_upload"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_gravity="center_horizontal"
                 android:textColor="@color/black"
-                android:textColorHint="#3E4A59"
-                android:textSize="@dimen/_11sdp" />
+                android:textSize="@dimen/_11sdp"
+                android:fontFamily="@font/redhat_regular"
+                android:text="Unggah Foto"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/btnNext"
+        android:id="@+id/btnDone"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_35sdp"
         android:layout_alignParentBottom="true"
@@ -86,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:fontFamily="@font/redhat_medium"
-            android:text="Selanjutnya"
+            android:text="Selesai"
             android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/_12sdp" />
