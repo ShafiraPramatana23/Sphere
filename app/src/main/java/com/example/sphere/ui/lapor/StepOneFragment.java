@@ -71,6 +71,7 @@ public class StepOneFragment extends Fragment {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LaporFragment.getInstance().nextStep();
             }
         });
 

@@ -25,6 +25,7 @@ public class LaporFragment extends Fragment {
     ViewPager2 viewPager2;
 
     private int curStep = 0;
+    private static LaporFragment instance = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class LaporFragment extends Fragment {
             }
         });*/
 
+        instance = this;
         stepView = root.findViewById(R.id.stepView);
         viewPager2 = root.findViewById(R.id.viewPager);
 
@@ -72,6 +74,10 @@ public class LaporFragment extends Fragment {
         } else {
             stepView.done(true);
         }
+    }
+
+    public static LaporFragment getInstance(){
+        return instance;
     }
 
     private class MyAdapter extends FragmentStateAdapter {
