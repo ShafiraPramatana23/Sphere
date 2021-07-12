@@ -1,7 +1,11 @@
 package com.example.sphere;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.example.sphere.ui.auth.LoginActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +15,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
+
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +32,16 @@ public class MainActivity extends AppCompatActivity {
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
         navView.setItemIconTintList(null);
+
+        sharedPreferences = getSharedPreferences("UserInfo",
+                Context.MODE_PRIVATE);
+        String loginStatus = sharedPreferences
+                .getString("token", "");
+        if (loginStatus.isEmpty()) {
+            startActivity(new Intent(MainActivity.
+                    this, LoginActivity.class));
+            finish();
+        }
     }
 
 }
