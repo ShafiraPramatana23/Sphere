@@ -16,11 +16,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -39,7 +41,17 @@ import com.example.sphere.ui.lapor.adapter.SpinnerAdapter;
 import com.example.sphere.ui.lapor.model.LaporData;
 import com.example.sphere.ui.profile.MyReportActivity;
 import com.example.sphere.util.MySingleton;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,11 +78,19 @@ public class StepTwoFragment extends Fragment {
     private String mParam2;
 
     LaporData data = null;
+
     private String token = "";
+    private String longitude = "";
+    private String latitude = "";
+    private String address = "";
+
     private String URL_FILE_OUTPUT_IMAGE = Environment.getExternalStorageDirectory() + File.separator + "temp_photo.jpg";
     private static final int CAMERA_REQUEST = 1888;
     private Uri uri = null;
     private File file = null;
+
+    EditText etLokasi;
+    MapView mapView;
 
     public StepTwoFragment() {
         // Required empty public constructor
@@ -107,14 +127,48 @@ public class StepTwoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Mapbox.getInstance(getContext().getApplicationContext(), getString(R.string.mapbox_access_token));
+
         View view = inflater.inflate(R.layout.fragment_step_two, container, false);
+
 
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
+        longitude = sharedPreferences.getString("longitude", "");
+        latitude = sharedPreferences.getString("latitude", "");
+
+        getLocationAdress();
 
         RelativeLayout btnDone = view.findViewById(R.id.btnDone);
         RelativeLayout btnPrev = view.findViewById(R.id.btnPrev);
         LinearLayout llUpload = view.findViewById(R.id.llUpload);
+        etLokasi = view.findViewById(R.id.etLokasi);
+        mapView = view.findViewById(R.id.map1);
+        if (savedInstanceState != null) {
+            mapView.onCreate(savedInstanceState);
+        }
+
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(MapboxMap mapboxMap) {
+                mapboxMap.setStyle(Style.MAPBOX_STREETS, new Style.OnStyleLoaded() {
+                    @Override
+                    public void onStyleLoaded(@NonNull Style style) {
+                        MarkerOptions options = new MarkerOptions();
+                        options.title("Current Position");
+                        options.position(new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude)));
+                        mapboxMap.addMarker(options);
+
+                        CameraPosition position = new CameraPosition.Builder()
+                                .target(new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude)))
+                                .zoom(10)
+                                .tilt(20)
+                                .build();
+                        mapboxMap.animateCamera(CameraUpdateFactory.newCameraPosition(position), 1000);
+                    }
+                });
+            }
+        });
 
         llUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,12 +209,9 @@ public class StepTwoFragment extends Fragment {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent m = new Intent(getContext(), MyReportActivity.class);
-                startActivity(m);
-
-//                data = StepOneFragment.getInstance().getFormData();
-//                System.out.println("UHUY title: " + data.getTitle());
-//                sendLapor();
+                data = StepOneFragment.getInstance().getFormData();
+                System.out.println("UHUY title: " + data.getTitle());
+                sendLapor();
             }
         });
 
@@ -172,6 +223,41 @@ public class StepTwoFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void getLocationAdress() {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("Loading ....");
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setIndeterminate(false);
+        progressDialog.show();
+        String uRl = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + longitude + "," + latitude + ".json?types=poi&access_token=" + getString(R.string.mapbox_access_token);
+        System.out.println("URL nyaaa: "+uRl);
+        StringRequest request = new StringRequest(Request.Method.GET,
+                uRl,
+                (String response) -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        JSONArray jsonArray = jsonObject.getJSONArray("features");
+                        JSONObject obj = jsonArray.getJSONObject(0);
+                        address = obj.getString("place_name");
+                        etLokasi.setText(address);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    progressDialog.dismiss();
+                }, error -> {
+            Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+        });
+        request.setRetryPolicy(
+                new DefaultRetryPolicy(30000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        MySingleton.getmInstance(getContext()).addToRequestQueue(request);
     }
 
     private void takePicture() throws IOException {
@@ -246,9 +332,9 @@ public class StepTwoFragment extends Fragment {
                 HashMap<String, String> param = new HashMap<>();
                 param.put("title", data.getTitle());
                 param.put("category", data.getCategory());
-                param.put("latitude", "11");
-                param.put("longitude", "11");
-                param.put("address", "dadadada");
+                param.put("latitude", latitude);
+                param.put("longitude", longitude);
+                param.put("address", address);
                 param.put("description", data.getDesc());
                 param.put("image", "a");
                 return param;
@@ -267,5 +353,46 @@ public class StepTwoFragment extends Fragment {
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         MySingleton.getmInstance(getContext()).addToRequestQueue(request);
+    }
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//    }
+
+//    @Override
+//    public void onAttach(@NonNull Context context) {
+//        super.onAttach(context);
+//    }
+
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 }
