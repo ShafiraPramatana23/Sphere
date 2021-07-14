@@ -40,8 +40,13 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     Double longitude = 0.0;
     Double latitude = 0.0;
+    String village = "";
+    String district = "";
+    String city = "";
+    String address = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         navView.setItemIconTintList(null);
 
         sharedPreferences = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         /*String loginStatus = sharedPreferences.getString("token", "");
         if (loginStatus.isEmpty()) {
             startActivity(new Intent(MainActivity.
@@ -66,8 +72,8 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }*/
 
-        checkPermission();
 
+        checkPermission();
     }
 
     private void checkPermission() {
@@ -97,41 +103,57 @@ public class MainActivity extends AppCompatActivity {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
 
-            SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("latitude", String.valueOf(latitude));
             editor.putString("longitude", String.valueOf(longitude));
             editor.apply();
 
             Toast.makeText(MainActivity.this, "latitude:" + latitude + " longitude:" + longitude, Toast.LENGTH_SHORT).show();
 
-//            getLocationAdress();
+            getLocationAdress();
         } else {
             locationManager.requestLocationUpdates(bestProvider, 1000, 0, (android.location.LocationListener) MainActivity.this);
         }
     }
 
     private void getLocationAdress() {
-        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+        final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);
         progressDialog.show();
         String uRl = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + longitude + "," + latitude + ".json?types=poi&access_token=" + getString(R.string.mapbox_access_token);
-        StringRequest request = new StringRequest(Request.Method.POST,
+        System.out.println("URL nyaaa: " + uRl);
+        StringRequest request = new StringRequest(Request.Method.GET,
                 uRl,
                 (String response) -> {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         JSONArray jsonArray = jsonObject.getJSONArray("features");
                         JSONObject obj = jsonArray.getJSONObject(0);
+                        JSONArray arrContext = obj.getJSONArray("context");
+
+                        for (int i = 0; i < arrContext.length(); i++) {
+                            JSONObject objContext = arrContext.getJSONObject(i);
+                            if (i == 0) {
+                                village = objContext.getString("text");
+                            } else if (i == 2) {
+                                district = objContext.getString("text");
+                            } else if (i == 3) {
+                                city = objContext.getString("text");
+                            }
+                        }
+
+                        address = village + ", " + district + " - " + city;
+                        editor.putString("address", address);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        System.out.println("OMG: "+e.toString());
                     }
                     progressDialog.dismiss();
                 }, error -> {
-            Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
             progressDialog.dismiss();
         });
         request.setRetryPolicy(
@@ -139,7 +161,11 @@ public class MainActivity extends AppCompatActivity {
                         DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-        MySingleton.getmInstance(MainActivity.this).addToRequestQueue(request);
+        MySingleton.getmInstance(this).addToRequestQueue(request);
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     @Override
@@ -149,6 +175,5 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             getLocation();
         }
-
     }
 }

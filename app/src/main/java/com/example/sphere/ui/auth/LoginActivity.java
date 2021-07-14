@@ -108,12 +108,15 @@ public class LoginActivity extends AppCompatActivity {
                 (String response) -> {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
-                        if(jsonObject.getBoolean("isError")){
+                        if (jsonObject.getBoolean("isError")){
                             Toast.makeText(LoginActivity.this,
                                     jsonObject.getString("message") , Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else{
+                            JSONObject userObj = jsonObject.getJSONObject("user");
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("token", jsonObject.getString("token"));
+                            editor.putString("userId", userObj.getString("id"));
+                            editor.putString("name", userObj.getString("name"));
                             editor.apply();
                             startActivity(new Intent(LoginActivity
                                     .this, MainActivity.class));
