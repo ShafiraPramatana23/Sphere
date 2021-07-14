@@ -3,19 +3,19 @@ package com.example.sphere.ui.lapor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.example.sphere.MainActivity;
 import com.example.sphere.R;
 import com.example.sphere.ui.lapor.adapter.SpinnerAdapter;
+import com.example.sphere.ui.lapor.model.LaporData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,9 +33,11 @@ public class StepOneFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    String[] ctg = { "Kebersihan Lingkungan", "Kerusakan Fasilitas Umum"};
+    String[] ctg = {"Kebersihan Lingkungan", "Kerusakan Fasilitas Umum"};
 
     private Spinner spin;
+    private EditText etJudul, etDesc;
+    private static StepOneFragment instance = null;
 
     public StepOneFragment() {
         // Required empty public constructor
@@ -73,25 +75,49 @@ public class StepOneFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_step_one, container, false);
+        instance = this;
 
         RelativeLayout btnNext = view.findViewById(R.id.btnNext);
         spin = view.findViewById(R.id.spinner);
+        etJudul = view.findViewById(R.id.etJudul);
+        etDesc = view.findViewById(R.id.etDeskripsi);
 
         setAdapterSpinner();
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LaporFragment.getInstance().nextStep();
+                if (!etJudul.getText().toString().isEmpty() && !etDesc.getText().toString().isEmpty()
+                        && !spin.getSelectedItem().toString().isEmpty()) {
+                    LaporFragment.getInstance().nextStep();
+                } else {
+                    Toast.makeText(getContext(), "Lengkapi form terlebih dahulu", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         return view;
     }
 
+    public static StepOneFragment getInstance() {
+        return instance;
+    }
+
+    public LaporData getFormData() {
+        String judul = etJudul.getText().toString();
+        String desc = etDesc.getText().toString();
+        String ctg = spin.getSelectedItem().toString();
+
+        LaporData data = new LaporData();
+        data.setTitle(judul);
+        data.setDesc(desc);
+        data.setCategory(ctg);
+
+        return data;
+    }
+
     private void setAdapterSpinner() {
         SpinnerAdapter aa = new SpinnerAdapter(getContext(), R.layout.item_spinner, ctg);
-//        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(aa);
     }
 }

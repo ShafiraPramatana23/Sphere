@@ -35,13 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("UserInfo",
                 Context.MODE_PRIVATE);
-        String loginStatus = sharedPreferences
-                .getString("token", "");
-        if (loginStatus.isEmpty()) {
+        String loginStatus = sharedPreferences.getString("token", "");
+        /*if (loginStatus.isEmpty()) {
             startActivity(new Intent(MainActivity.
                     this, LoginActivity.class));
             finish();
-        }
+        }*/
     }
 
 }

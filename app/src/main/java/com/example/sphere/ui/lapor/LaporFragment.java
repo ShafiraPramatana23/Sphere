@@ -1,5 +1,6 @@
 package com.example.sphere.ui.lapor;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -32,18 +34,12 @@ public class LaporFragment extends Fragment {
         dashboardViewModel =
                 new ViewModelProvider(this).get(LaporViewModel.class);
         View root = inflater.inflate(R.layout.fragment_lapor, container, false);
-        /*final TextView textView = root.findViewById(R.id.text_dashboard);
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });*/
 
         instance = this;
         stepView = root.findViewById(R.id.stepView);
         viewPager2 = root.findViewById(R.id.viewPager);
 
+        viewPager2.setUserInputEnabled(false);
         viewPager2.setAdapter(new MyAdapter(this));
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -54,7 +50,7 @@ public class LaporFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                curStep= position;
+                curStep = position;
                 stepView.go(position, true);
             }
 
@@ -63,6 +59,17 @@ public class LaporFragment extends Fragment {
                 super.onPageScrollStateChanged(state);
             }
         });
+
+
+        /* Request user permissions in runtime */
+        ActivityCompat.requestPermissions(getActivity(),
+                new String[]{
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                },
+                100);
+        /* Request user permissions in runtime */
+
         return root;
     }
 
@@ -76,7 +83,13 @@ public class LaporFragment extends Fragment {
         }
     }
 
-    public static LaporFragment getInstance(){
+    public void prevStep() {
+        curStep--;
+        stepView.go(curStep, true);
+        viewPager2.setCurrentItem(curStep, true);
+    }
+
+    public static LaporFragment getInstance() {
         return instance;
     }
 
