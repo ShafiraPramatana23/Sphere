@@ -7,19 +7,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +38,8 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.sphere.AlertActivity;
 import com.example.sphere.BuildConfig;
 import com.example.sphere.R;
@@ -40,6 +47,7 @@ import com.example.sphere.ui.auth.RegisterActivity;
 import com.example.sphere.ui.lapor.adapter.SpinnerAdapter;
 import com.example.sphere.ui.lapor.model.LaporData;
 import com.example.sphere.ui.profile.MyReportActivity;
+import com.example.sphere.util.ImageUtils;
 import com.example.sphere.util.MySingleton;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -56,8 +64,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,13 +96,15 @@ public class StepTwoFragment extends Fragment {
     private String latitude = "";
     private String address = "";
 
-    private String URL_FILE_OUTPUT_IMAGE = Environment.getExternalStorageDirectory() + File.separator + "temp_photo.jpg";
     private static final int CAMERA_REQUEST = 1888;
     private Uri uri = null;
     private File file = null;
 
     EditText etLokasi;
     MapView mapView;
+    ImageView iv;
+    LinearLayout llNoteUpload, llPhoto;
+    TextView tvChange;
 
     public StepTwoFragment() {
         // Required empty public constructor
@@ -141,9 +155,13 @@ public class StepTwoFragment extends Fragment {
 
         RelativeLayout btnDone = view.findViewById(R.id.btnDone);
         RelativeLayout btnPrev = view.findViewById(R.id.btnPrev);
-        LinearLayout llUpload = view.findViewById(R.id.llUpload);
+        llNoteUpload = view.findViewById(R.id.llNoteUpload);
+        llPhoto = view.findViewById(R.id.llPhoto);
         etLokasi = view.findViewById(R.id.etLokasi);
         mapView = view.findViewById(R.id.map1);
+        iv = view.findViewById(R.id.iv);
+        tvChange = view.findViewById(R.id.tvChange);
+
         if (savedInstanceState != null) {
             mapView.onCreate(savedInstanceState);
         }
@@ -170,7 +188,7 @@ public class StepTwoFragment extends Fragment {
             }
         });
 
-        llUpload.setOnClickListener(new View.OnClickListener() {
+        llNoteUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(
@@ -190,7 +208,7 @@ public class StepTwoFragment extends Fragment {
                 } else {
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(getActivity(),
-                                new String[] {
+                                new String[]{
                                         Manifest.permission.READ_EXTERNAL_STORAGE,
                                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                                 },
@@ -199,6 +217,7 @@ public class StepTwoFragment extends Fragment {
                         try {
                             takePicture();
                         } catch (IOException e) {
+                            System.out.println("aawww salah : " + e);
                             e.printStackTrace();
                         }
                     }
@@ -206,12 +225,28 @@ public class StepTwoFragment extends Fragment {
             }
         });
 
+        tvChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    takePicture();
+                } catch (IOException e) {
+                    System.out.println("aawww salah : " + e);
+                    e.printStackTrace();
+                }
+            }
+        });
+
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                data = StepOneFragment.getInstance().getFormData();
-                System.out.println("UHUY title: " + data.getTitle());
-                sendLapor();
+                if (file == null) {
+                    Toast.makeText(getContext(), "Upload foto terlebih dahulu!", Toast.LENGTH_SHORT).show();
+                } else {
+                    data = StepOneFragment.getInstance().getFormData();
+                    System.out.println("UHUY title: " + data.getTitle());
+                    sendLapor();
+                }
             }
         });
 
@@ -233,7 +268,7 @@ public class StepTwoFragment extends Fragment {
         progressDialog.setIndeterminate(false);
         progressDialog.show();
         String uRl = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + longitude + "," + latitude + ".json?types=poi&access_token=" + getString(R.string.mapbox_access_token);
-        System.out.println("URL nyaaa: "+uRl);
+        System.out.println("URL nyaaa: " + uRl);
         StringRequest request = new StringRequest(Request.Method.GET,
                 uRl,
                 (String response) -> {
@@ -261,33 +296,50 @@ public class StepTwoFragment extends Fragment {
     }
 
     private void takePicture() throws IOException {
-//        File outputImage = new File(Environment.getExternalStorageState(), File.separator + "photolapor.jpg");
-        File outputImage = new File(Environment.DIRECTORY_PICTURES + File.separator + "photolapor.jpg");
-        outputImage.createNewFile();
+        File f = new File(Environment.getExternalStorageDirectory() + File.separator +
+                Environment.DIRECTORY_PICTURES + File.separator + "sphere");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                Files.createDirectory(Paths.get(f.getAbsolutePath()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            f.mkdir();
+            f.mkdirs();
+            Toast.makeText(getContext(), f.getPath(), Toast.LENGTH_LONG).show();
+        }
 
-        file = new File(outputImage.getPath());
+        File testMediaFile = new File(f, "test.png");
+        testMediaFile.createNewFile();
+
+        file = new File(testMediaFile.getPath());
 
         if (Build.VERSION.SDK_INT >= 24) {
             uri = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".provider", file);
         } else {
-            uri = Uri.fromFile(outputImage);
+            uri = Uri.fromFile(file);
         }
 
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
         intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-        getActivity().startActivityForResult(intent, 0);
+        startActivityForResult(intent, 1);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        System.out.println("ddddsdssd: " + resultCode);
-
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            System.out.println("datanyaaa: " + data.getData());
-        } else {
-            System.out.println("sedihhh");
+            new ImageUtils().saveBitmapToFile(file);
+            Glide.with(getContext())
+                    .load(file)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(iv);
+
+            llNoteUpload.setVisibility(View.GONE);
+            llPhoto.setVisibility(View.VISIBLE);
         }
     }
 
@@ -336,7 +388,7 @@ public class StepTwoFragment extends Fragment {
                 param.put("longitude", longitude);
                 param.put("address", address);
                 param.put("description", data.getDesc());
-                param.put("image", "a");
+                param.put("image", file.getPath());
                 return param;
             }
 
@@ -354,17 +406,6 @@ public class StepTwoFragment extends Fragment {
 
         MySingleton.getmInstance(getContext()).addToRequestQueue(request);
     }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//    }
-
-//    @Override
-//    public void onAttach(@NonNull Context context) {
-//        super.onAttach(context);
-//    }
-
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
