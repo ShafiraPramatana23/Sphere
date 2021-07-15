@@ -17,5 +17,6 @@
     <!--    -->
 
     <string name="mapbox_access_token">pk.eyJ1Ijoia2xlbnRpbmdyIiwiYSI6ImNrcTFhMmEwYzA4MGYydXFzdzRocnVxZm4ifQ.2BaSyLr8v05mNtGEumIDQQ</string>
+    <string name="open_weather_id">aaa15a12666526e9887d5cdc82d1824b</string>
 
 </resources>

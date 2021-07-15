@@ -10,13 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.sphere.R;
+import com.example.sphere.ui.home.model.River;
 
-public class RiverSpinnerAdapter extends ArrayAdapter<String> {
-    private String[] objects;
+import java.util.ArrayList;
 
-    public RiverSpinnerAdapter(Context context, int textViewResourceId, String[] objects) {
-        super(context, textViewResourceId, objects);
-        this.objects = objects;
+public class RiverSpinnerAdapter extends ArrayAdapter<River> {
+    private ArrayList<River> dataList;
+
+    public RiverSpinnerAdapter(Context context, int textViewResourceId, ArrayList<River> dataList) {
+        super(context, textViewResourceId, dataList);
+        this.dataList = dataList;
     }
 
     @Override
@@ -33,7 +36,10 @@ public class RiverSpinnerAdapter extends ArrayAdapter<String> {
     private View getCustomView(final int position, View convertView, ViewGroup parent) {
         View row = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_spinner, parent, false);
         final TextView label = row.findViewById(R.id.tvText);
-        label.setText(objects[position]);
+
+        River items = dataList.get(position);
+        label.setText(items.getName());
+
         return row;
     }
 }

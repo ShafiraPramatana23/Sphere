@@ -57,7 +57,7 @@
             app:mwhVelocity="1"
             app:mwhProgress="0.5"
             app:mwhGradientAngle="45"
-            app:mwhWaveHeight="50dp"
+            app:mwhWaveHeight="@dimen/_30sdp"
             app:mwhColorAlpha="0.45"
             app:mwhStartColor="@color/green_main"
             app:mwhCloseColor="@color/green_light"
@@ -72,21 +72,33 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_3sdp"
-                android:fontFamily="@font/redhat_medium"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:fontFamily="@font/redhat_regular"
                 android:text="Ketinggian Air"
                 android:textColor="@color/grey_dark"
-                android:textSize="@dimen/_18sdp" />
+                android:textSize="@dimen/_14sdp" />
 
             <TextView
+                android:id="@+id/tvHeight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/redhat_medium"
                 android:layout_gravity="center"
-                android:text="2 m"
+                android:text="0"
                 android:textStyle="bold"
                 android:textColor="@color/grey_dark"
                 android:textSize="@dimen/_30sdp" />
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:fontFamily="@font/redhat_medium"
+                android:layout_gravity="center"
+                android:text="(Status)"
+                android:textColor="@color/grey_dark"
+                android:textSize="@dimen/_18sdp" />
 
         </LinearLayout>
     </RelativeLayout>

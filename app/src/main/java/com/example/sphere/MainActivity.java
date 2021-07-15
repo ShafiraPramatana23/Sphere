@@ -23,6 +23,7 @@ import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
@@ -168,6 +169,14 @@ public class MainActivity extends AppCompatActivity {
         return address;
     }
 
+    public String getLat() {
+        return String.valueOf(latitude);
+    }
+
+    public String getLong() {
+        return String.valueOf(longitude);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -176,4 +185,11 @@ public class MainActivity extends AppCompatActivity {
             getLocation();
         }
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if
+//    }
 }
