@@ -1,6 +1,8 @@
 package com.example.sphere;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,6 +19,8 @@ import android.widget.Toast;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
+import com.example.sphere.services.MyService;
+import com.example.sphere.services.NotificationReceiver;
 import com.example.sphere.ui.auth.LoginActivity;
 import com.example.sphere.util.MySingleton;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -35,8 +40,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,14 +60,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-//                R.id.navigation_home, R.id.navigation_lapor, R.id.navigation_profile)
-//                .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
         navView.setItemIconTintList(null);
 
@@ -73,8 +75,23 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }*/
 
+//        setNotif();
 
         checkPermission();
+    }
+
+    private void setNotif() {
+        Calendar updateTime = Calendar.getInstance();
+        updateTime.setTimeZone(TimeZone.getDefault());
+        updateTime.get(Calendar.HOUR_OF_DAY);
+        updateTime.get(Calendar.MINUTE);
+
+        Intent downloader = new Intent(this, NotificationReceiver.class);
+        downloader.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, downloader, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), 100, pendingIntent);
     }
 
     private void checkPermission() {
@@ -150,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        System.out.println("OMG: "+e.toString());
+                        System.out.println("OMG: " + e.toString());
                     }
                     progressDialog.dismiss();
                 }, error -> {
