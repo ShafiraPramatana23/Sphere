@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +42,7 @@ import java.util.Map;
 
 public class ProfileFragment extends Fragment {
     TextView txtUsername;
-    ImageView btnAkunsaya, btnLaporansaya, btnSandi, btnKeluar, ivBack;
+    LinearLayout LLmyakun, LLlaporan, LLsandi, LLKeluar, ivBack;
     SharedPreferences sharedPreferences;
     private String token = "";
 
@@ -57,33 +58,36 @@ public class ProfileFragment extends Fragment {
         token = sharedPreferences.getString("token", "");
 
         txtUsername = root.findViewById(R.id.txtUsername);
-        btnAkunsaya = root.findViewById(R.id.btnAkunsaya);
-        btnLaporansaya = root.findViewById(R.id.btnLaporansaya);
-        btnSandi = root.findViewById(R.id.btnSandi);
-        btnKeluar = root.findViewById(R.id.btnKeluar);
+        LLmyakun = root.findViewById(R.id.LLmyakun);
+        LLlaporan = root.findViewById(R.id.LLlaporan);
+        LLsandi = root.findViewById(R.id.LLsandi);
+        LLKeluar = root.findViewById(R.id.LLKeluar);
 
-        btnAkunsaya.setOnClickListener(new View.OnClickListener() {
+        LLmyakun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent Akunsaya = new Intent(getContext(), EditProfileActivity.class);
                 startActivity(Akunsaya);
             }
         });
-        btnLaporansaya.setOnClickListener(new View.OnClickListener() {
+
+        LLlaporan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent Laporansaya = new Intent(getContext(), MyReportActivity.class);
                 startActivity(Laporansaya);
             }
         });
-        btnSandi.setOnClickListener(new View.OnClickListener() {
+
+        LLsandi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent Ubahsandi = new Intent(getContext(), EditPasswordActivity.class);
                 startActivity(Ubahsandi);
             }
         });
-        btnKeluar.setOnClickListener(new View.OnClickListener() {
+
+        LLKeluar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 logout();
@@ -95,7 +99,7 @@ public class ProfileFragment extends Fragment {
     }
     private void getProfile() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);
@@ -141,7 +145,7 @@ public class ProfileFragment extends Fragment {
     }
     private void logout() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);

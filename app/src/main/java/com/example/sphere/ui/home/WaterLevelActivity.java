@@ -87,7 +87,7 @@ public class WaterLevelActivity extends AppCompatActivity {
 
     private void getRiverList() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);
@@ -143,7 +143,7 @@ public class WaterLevelActivity extends AppCompatActivity {
 
     private void getRiverById(String id) {
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);

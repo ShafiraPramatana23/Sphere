@@ -111,7 +111,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     private void getCurrentWeather() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);

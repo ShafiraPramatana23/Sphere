@@ -264,7 +264,7 @@ public class StepTwoFragment extends Fragment {
 
     private void getLocationAdress() {
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);

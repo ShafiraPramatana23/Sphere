@@ -175,7 +175,7 @@ public class HomeFragment extends Fragment {
 
     private void getCurrentWeather(String latitude, String longitude) {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);
@@ -235,7 +235,7 @@ public class HomeFragment extends Fragment {
 
     private void getRiverById() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);
