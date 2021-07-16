@@ -62,11 +62,11 @@
 
             <ImageView
                 android:id="@+id/icon_alert"
-                android:layout_width="@dimen/_130sdp"
-                android:layout_height="@dimen/_130sdp"
+                android:layout_width="@dimen/_70sdp"
+                android:layout_height="@dimen/_70sdp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/_60sdp"
-                android:src="@drawable/ic_profile_photo_foreground" />
+                android:src="@drawable/icon_photo" />
 
             <TextView
                 android:id="@+id/txtUsername"

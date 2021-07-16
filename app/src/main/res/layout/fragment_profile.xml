@@ -55,10 +55,10 @@
                     android:layout_marginBottom="@dimen/_10sdp">
 
                     <ImageView
-                        android:layout_width="@dimen/_100sdp"
-                        android:layout_height="@dimen/_100sdp"
+                        android:layout_width="@dimen/_70sdp"
+                        android:layout_height="@dimen/_70sdp"
                         android:adjustViewBounds="true"
-                        android:src="@drawable/ic_profile_photo_foreground"></ImageView>
+                        android:src="@drawable/icon_photo"></ImageView>
                 </RelativeLayout>
 
                 <TextView
