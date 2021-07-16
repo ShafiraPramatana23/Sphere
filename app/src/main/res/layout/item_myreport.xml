@@ -67,6 +67,7 @@
                     android:textSize="@dimen/_10sdp" />
 
                 <ImageView
+                    android:id="@+id/ivBack"
                     android:layout_width="@dimen/_15sdp"
                     android:layout_height="@dimen/_10sdp"
                     android:layout_alignParentRight="true"
@@ -135,6 +136,7 @@
                     android:textSize="@dimen/_10sdp" />
 
                 <ImageView
+                    android:id="@+id/ivMaps"
                     android:layout_width="@dimen/_160sdp"
                     android:layout_height="@dimen/_100sdp"
                     android:layout_marginTop="@dimen/_3sdp"

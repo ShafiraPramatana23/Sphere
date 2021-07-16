@@ -13,7 +13,15 @@ public class MyReportList {
     String longitude;
     Boolean isExpandable;
 
-    public MyReportList(String id, String userId, String title, String desc, String category, String address, String image, String date, String latitude, String longitude) {
+    public Boolean getExpandable() {
+        return isExpandable;
+    }
+
+    public void setExpandable(Boolean expandable) {
+        isExpandable = expandable;
+    }
+
+    public MyReportList(String id, String userId, String title, String desc, String category, String address, String image, String date, String latitude, String longitude, Boolean isExpandable) {
         this.id = id;
         this.userId = userId;
         this.title = title;
@@ -24,6 +32,7 @@ public class MyReportList {
         this.date = date;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.isExpandable = isExpandable;
     }
 
     public String getId() {
