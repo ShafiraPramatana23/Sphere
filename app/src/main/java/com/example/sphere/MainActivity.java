@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void getLocationAdress() {
         /*final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (location != null) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-            Toast.makeText(this, String.valueOf(latitude), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, String.valueOf(latitude), Toast.LENGTH_SHORT).show();
 
             getLocationAdress();
 

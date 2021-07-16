@@ -51,7 +51,6 @@ public class MyReportActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
-        getDataList();
 
         ImageView ivBack = findViewById(R.id.ivBack);
         recyclerView = findViewById(R.id.rv);
@@ -60,6 +59,8 @@ public class MyReportActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MyReportActivity.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        getDataList();
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +72,7 @@ public class MyReportActivity extends AppCompatActivity {
 
     private void getDataList() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Loading ....");
+        progressDialog.setTitle("Tunggu ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);
@@ -105,7 +106,6 @@ public class MyReportActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                     progressDialog.dismiss();
-                    finish();
                 }, error -> {
             try {
                 String body = new String(error.networkResponse.data, "UTF-8");
