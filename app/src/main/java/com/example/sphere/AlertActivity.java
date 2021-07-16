@@ -61,8 +61,7 @@ public class AlertActivity extends AppCompatActivity {
             btnFinish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(AlertActivity
-                            .this, LoginActivity.class));
+                    finish();
                 }
             });
         } else if (menu.equals("report")) {
@@ -79,6 +78,7 @@ public class AlertActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //kembali ke
+                    AlertActivity.super.onBackPressed();
                 }
             });
         }

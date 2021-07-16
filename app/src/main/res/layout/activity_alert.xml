@@ -7,79 +7,93 @@
     android:background="@color/white"
     tools:context=".AlertActivity">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/bg_alert"
-        android:layout_alignParentTop="true" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/icon_alert"
-        android:layout_width="@dimen/_150sdp"
-        android:layout_height="@dimen/_150sdp"
-        android:layout_marginTop="@dimen/_130sdp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_success" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/textLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/icon_alert"
-        android:gravity="center_horizontal"
-        android:padding="@dimen/_20sdp"
-        android:orientation="vertical">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_220sdp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/bg_alert" />
 
-        <TextView
-            android:id="@+id/MessageTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:paddingHorizontal="@dimen/_50sdp"
-            android:fontFamily="@font/redhat_family"
-            android:text="title"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_20sdp"
-            android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/icon_alert"
+                android:layout_width="@dimen/_150sdp"
+                android:layout_height="@dimen/_150sdp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_120sdp"
+                android:src="@drawable/ic_success" />
 
-        <TextView
-            android:id="@+id/MessageDesc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:fontFamily="@font/redhat_family"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:text="desc"
-            android:textColor="@color/grey_main"
-            android:textSize="@dimen/_13sdp" />
+            <LinearLayout
+                android:id="@+id/textLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/icon_alert"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="@dimen/_20sdp">
 
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/MessageTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/redhat_family"
+                    android:gravity="center_horizontal"
+                    android:paddingHorizontal="@dimen/_50sdp"
+                    android:text="title"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_20sdp"
+                    android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btnFinish"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textLayout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/_40sdp"
-        android:fontFamily="@font/redhat_family"
-        android:background="@drawable/rounded_green"
-        android:padding="@dimen/_10sdp"
-        android:text="Finish"
-        android:textAllCaps="false"
-        android:textSize="@dimen/_12sdp"
-        android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/MessageDesc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:fontFamily="@font/redhat_family"
+                    android:gravity="center_horizontal"
+                    android:paddingHorizontal="@dimen/_50sdp"
+                    android:text="desc"
+                    android:textAlignment="center"
+                    android:textColor="@color/grey_main"
+                    android:textSize="@dimen/_13sdp" />
 
-    <TextView
-        android:id="@+id/txtBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnFinish"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:layout_centerHorizontal="true"
-        android:text="Kembali"
-        android:fontFamily="@font/redhat_family"
-        android:textColor="@color/black"
-        android:textSize="@dimen/_12sdp"
-        android:clickable="true" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnFinish"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textLayout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:background="@drawable/rounded_green"
+                android:fontFamily="@font/redhat_family"
+                android:padding="@dimen/_10sdp"
+                android:text="Finish"
+                android:textAllCaps="false"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnFinish"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:clickable="true"
+                android:fontFamily="@font/redhat_family"
+                android:text="Kembali"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12sdp" />
+
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

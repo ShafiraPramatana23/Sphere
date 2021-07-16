@@ -37,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     TextView name, email, password, password_conf;
     RelativeLayout btnRegister;
-    ImageView showPassReg, showPassConfReg;
+    ImageView showPassReg, showPassConfReg, ivBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +56,17 @@ public class RegisterActivity extends AppCompatActivity {
 
         showPassReg = findViewById(R.id.icPassReg);
         showPassConfReg = findViewById(R.id.icPassConfReg);
+        ivBack = findViewById(R.id.ivBack);
 
         password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         password_conf.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RegisterActivity.super.onBackPressed();
+            }
+        });
 
         showPassReg.setOnClickListener(new View.OnClickListener() {
             @Override
