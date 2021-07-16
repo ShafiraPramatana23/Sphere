@@ -2,17 +2,24 @@ package com.example.sphere;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,6 +30,8 @@ import com.example.sphere.services.MyService;
 import com.example.sphere.services.NotificationReceiver;
 import com.example.sphere.ui.auth.LoginActivity;
 import com.example.sphere.util.MySingleton;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.mapboxsdk.location.LocationComponent;
@@ -46,7 +55,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -56,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
     String district = "";
     String city = "";
     String address = "";
+    Boolean isCall = false;
+
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLocation;
+    private LocationManager mLocationManager;
+    private LocationRequest mLocationRequest;
+    private com.google.android.gms.location.LocationListener listener;
+    private long UPDATE_INTERVAL = 2 * 1000; /* 10 secs */
+    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,23 +103,46 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }*/
 
-//        setNotif();
-
 //        checkPermission();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        checkLocation();
     }
 
-    private void setNotif() {
-        Calendar updateTime = Calendar.getInstance();
-        updateTime.setTimeZone(TimeZone.getDefault());
-        updateTime.get(Calendar.HOUR_OF_DAY);
-        updateTime.get(Calendar.MINUTE);
+    private boolean checkLocation() {
+        if (!isLocationEnabled())
+            showAlert();
+        return isLocationEnabled();
+    }
 
-        Intent downloader = new Intent(this, NotificationReceiver.class);
-        downloader.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    private boolean isLocationEnabled() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, downloader, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), 100, pendingIntent);
+    private void showAlert() {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Aktifkan Lokasi")
+                .setMessage("Setelan Lokasi Anda disetel ke 'Nonaktif'.\nHarap Aktifkan Lokasi untuk menggunakan aplikasi ini")
+                .setPositiveButton("Pengaturan Lokasi", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                })
+                .setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    }
+                });
+        dialog.show();
     }
 
     private void checkPermission() {
@@ -107,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     1);
         } else {
             getLocation();
@@ -137,17 +180,17 @@ public class MainActivity extends AppCompatActivity {
 
             getLocationAdress();
         } else {
-            locationManager.requestLocationUpdates(bestProvider, 1000, 0, (android.location.LocationListener) MainActivity.this);
+//            locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
         }
     }
 
     private void getLocationAdress() {
-        final ProgressDialog progressDialog = new ProgressDialog(this);
+        /*final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Loading ....");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setIndeterminate(false);
-        progressDialog.show();
+        progressDialog.show();*/
         String uRl = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + longitude + "," + latitude + ".json?types=poi&access_token=" + getString(R.string.mapbox_access_token);
         System.out.println("URL nyaaa: " + uRl);
         StringRequest request = new StringRequest(Request.Method.GET,
@@ -177,10 +220,11 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                         System.out.println("OMG: " + e.toString());
                     }
-                    progressDialog.dismiss();
+//                    progressDialog.dismiss();
                 }, error -> {
+            System.out.println("dapeni: " + error.toString());
             Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
         });
         request.setRetryPolicy(
                 new DefaultRetryPolicy(30000,
@@ -208,13 +252,92 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 1) {
 //            getLocation();
+            if (mLocation == null) {
+                startLocationUpdates();
+            }
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if
-//    }
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        if (location != null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+            Toast.makeText(this, String.valueOf(latitude), Toast.LENGTH_SHORT).show();
+
+            getLocationAdress();
+
+            editor.putString("latitude", String.valueOf(latitude));
+            editor.putString("longitude", String.valueOf(longitude));
+            editor.apply();
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+            return;
+        }
+        startLocationUpdates();
+        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLocation == null) {
+            startLocationUpdates();
+        }
+        if (mLocation != null) {
+// mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
+//mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
+        } else {
+            Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.i("TAG", "Connection failed. Error: " + connectionResult.getErrorCode());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    protected void startLocationUpdates() {
+// Create the location request
+        mLocationRequest = LocationRequest.create()
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setInterval(UPDATE_INTERVAL)
+                .setFastestInterval(FASTEST_INTERVAL);
+// Request location updates
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                mLocationRequest, this);
+        Log.d("reque", "--->>>>");
+    }
 }

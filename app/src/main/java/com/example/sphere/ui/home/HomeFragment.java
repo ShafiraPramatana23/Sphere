@@ -136,29 +136,29 @@ public class HomeFragment extends Fragment {
         int delay = 0; // delay for 0 sec.
         int period = 2000; // repeat every 10 sec.
         Timer t = new Timer();
-//        t.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                address = ((MainActivity)getActivity()).getAddress();
-//                latitude = ((MainActivity)getActivity()).getLat();
-//                longitude = ((MainActivity)getActivity()).getLong();
-//
-//                System.out.println("oii address: "+address);
-//
-//                if (!address.isEmpty()) {
-//                    getActivity().runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            tvAddress.setText(address);
-//                            llLocation.setVisibility(View.VISIBLE);
-//
-//                            getCurrentWeather(latitude, longitude);
-//                        }
-//                    });
-//                    t.cancel();
-//                }
-//            }
-//        }, delay, period);
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                address = ((MainActivity)getActivity()).getAddress();
+                latitude = ((MainActivity)getActivity()).getLat();
+                longitude = ((MainActivity)getActivity()).getLong();
+
+                System.out.println("oii address: "+address);
+
+                if (!address.isEmpty() && !latitude.isEmpty() && !longitude.isEmpty()) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvAddress.setText(address);
+                            llLocation.setVisibility(View.VISIBLE);
+
+                            getCurrentWeather(latitude, longitude);
+                        }
+                    });
+                    t.cancel();
+                }
+            }
+        }, delay, period);
 
         return root;
     }
