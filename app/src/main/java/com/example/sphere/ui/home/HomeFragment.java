@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment {
         ivNotif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), EditPasswordActivity.class);
+                Intent intent = new Intent(getActivity(), ListNotifActivity.class);
                 getActivity().startActivity(intent);
             }
         });
