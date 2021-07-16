@@ -237,7 +237,7 @@
                     android:id="@+id/LLsandi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/underline3">
+                    android:layout_below="@id/underline1">
 
                     <LinearLayout
                         android:id="@+id/linearlayout6"
@@ -293,7 +293,7 @@
                     android:id="@+id/LLKeluar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/underline4">
+                    android:layout_below="@id/underline1">
 
                     <LinearLayout
                         android:id="@+id/linearlayout7"

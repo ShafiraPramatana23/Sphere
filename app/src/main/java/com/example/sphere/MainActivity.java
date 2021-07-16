@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        setNotif();
 
-        checkPermission();
+//        checkPermission();
     }
 
     private void setNotif() {
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == 1) {
-            getLocation();
+//            getLocation();
         }
     }
 
