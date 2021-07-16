@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.sphere.ui.auth.LoginActivity;
+import com.example.sphere.ui.profile.MyReportActivity;
 
 public class AlertActivity extends AppCompatActivity {
     TextView title, description, back;
@@ -37,7 +38,7 @@ public class AlertActivity extends AppCompatActivity {
             btnFinish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //kembali ke
+                   finish();
                 }
             });
         } else if (menu.equals("profile")) {
@@ -72,7 +73,9 @@ public class AlertActivity extends AppCompatActivity {
             btnFinish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //halaman laporan saya
+                    Intent m = new Intent(AlertActivity.this, MyReportActivity.class);
+                    startActivity(m);
+                    finish();
                 }
             });
             back.setOnClickListener(new View.OnClickListener() {
