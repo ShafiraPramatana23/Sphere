@@ -47,6 +47,8 @@ public class MyReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_report);
 
+        list = new ArrayList<>();
+
         SharedPreferences sharedPreferences = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
         getDataList();

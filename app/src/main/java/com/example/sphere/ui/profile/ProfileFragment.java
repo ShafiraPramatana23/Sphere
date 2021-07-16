@@ -41,7 +41,7 @@ import java.util.Map;
 
 public class ProfileFragment extends Fragment {
     TextView txtUsername;
-    ImageView btnAkunsaya, btnLaporansaya, btnSandi, btnKeluar;
+    ImageView btnAkunsaya, btnLaporansaya, btnSandi, btnKeluar, ivBack;
     SharedPreferences sharedPreferences;
     private String token = "";
 
@@ -188,5 +188,11 @@ public class ProfileFragment extends Fragment {
                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         MySingleton.getmInstance(getContext()).addToRequestQueue(request);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getProfile();
     }
 }
