@@ -28,7 +28,7 @@ public class DateFormatter {
 
     public String convertDate(String dt) {
         SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        SimpleDateFormat fmt2 = new SimpleDateFormat("dd - mm - yyyy | HH:ss", new Locale("ID"));
+        SimpleDateFormat fmt2 = new SimpleDateFormat("dd MMM yyyy HH:ss", new Locale("ID"));
         try {
             Date date = fmt.parse(dt);
             return fmt2.format(date);
