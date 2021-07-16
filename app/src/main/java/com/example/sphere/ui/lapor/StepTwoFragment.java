@@ -70,6 +70,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -310,7 +312,8 @@ public class StepTwoFragment extends Fragment {
             Toast.makeText(getContext(), f.getPath(), Toast.LENGTH_LONG).show();
         }
 
-        File testMediaFile = new File(f, "test.png");
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File testMediaFile = new File(f, "lapor" + timeStamp + ".png");
         testMediaFile.createNewFile();
 
         file = new File(testMediaFile.getPath());
@@ -362,12 +365,12 @@ public class StepTwoFragment extends Fragment {
                             Intent m = new Intent(getContext(), AlertActivity.class);
                             m.putExtra("menu", "report");
                             startActivity(m);
+                            getActivity().finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     progressDialog.dismiss();
-                    getActivity().finish();
                 }, error -> {
             try {
                 String body = new String(error.networkResponse.data, "UTF-8");

@@ -78,7 +78,9 @@ public class AlertActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //kembali ke
-                    AlertActivity.super.onBackPressed();
+                    Intent m = new Intent(AlertActivity.this, MainActivity.class);
+                    startActivity(m);
+                    finish();
                 }
             });
         }
