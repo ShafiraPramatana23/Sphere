@@ -16,9 +16,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
+import com.example.sphere.AlertActivity;
 import com.example.sphere.MainActivity;
 import com.example.sphere.R;
 import com.example.sphere.util.MySingleton;
@@ -26,6 +28,7 @@ import com.example.sphere.util.MySingleton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +36,7 @@ import java.util.Objects;
 public class EditPasswordActivity extends AppCompatActivity {
 
     TextView oldpass, newpass, confirmpass;
-    ImageView showPassEditPass;
+    ImageView showPassEditPass1, showPassEditPass2, showPassEditPass3;
     Button btnEditPass;
     SharedPreferences sharedPreferences;
 
@@ -46,7 +49,9 @@ public class EditPasswordActivity extends AppCompatActivity {
         newpass = findViewById(R.id.newPassword);
         confirmpass = findViewById(R.id.confirmPassword);
         btnEditPass = findViewById(R.id.btnEditPassword);
-        showPassEditPass = findViewById(R.id.icPassEdit);
+        showPassEditPass1 = findViewById(R.id.icPassEdit1);
+        showPassEditPass2 = findViewById(R.id.icPassEdit2);
+        showPassEditPass3 = findViewById(R.id.icPassEdit3);
         sharedPreferences = getSharedPreferences("UserInfo",
                 Context.MODE_PRIVATE);
 
@@ -54,24 +59,36 @@ public class EditPasswordActivity extends AppCompatActivity {
         newpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         confirmpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
 
-        showPassEditPass.setOnClickListener(new View.OnClickListener() {
+        showPassEditPass1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Integer inputType1 = oldpass.getInputType();
-                Integer inputType2 = newpass.getInputType();
-                Integer inputType3 = confirmpass.getInputType();
 
                 if (inputType1 == InputType.TYPE_CLASS_TEXT) {
                     oldpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
                 } else {
                     oldpass.setInputType(InputType.TYPE_CLASS_TEXT);
                 }
+            }
+        });
+
+        showPassEditPass2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer inputType2 = newpass.getInputType();
 
                 if (inputType2 == InputType.TYPE_CLASS_TEXT) {
                     newpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
                 } else {
                     newpass.setInputType(InputType.TYPE_CLASS_TEXT);
                 }
+            }
+        });
+
+        showPassEditPass3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer inputType3 = confirmpass.getInputType();
 
                 if (inputType3 == InputType.TYPE_CLASS_TEXT) {
                     confirmpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
@@ -116,5 +133,60 @@ public class EditPasswordActivity extends AppCompatActivity {
         progressDialog.show();
         String uRl = "https://sphere-apps.herokuapp.com/api/auth/edit-password";
 
+        StringRequest request = new StringRequest(Request.Method.PUT,
+                uRl,
+                (String response) -> {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if (jsonObject.getBoolean("isError")) {
+                            Toast.makeText(EditPasswordActivity.this,
+                                    jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Intent m = new Intent(EditPasswordActivity.this, AlertActivity.class);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("token", jsonObject.getString("token"));
+                            startActivity(m);
+                            finish();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    progressDialog.dismiss();
+                    finish();
+                }, error -> {
+            try {
+                String body = new String(error.networkResponse.data, "UTF-8");
+                System.out.println("bods " + body);
+                Toast.makeText(EditPasswordActivity.this,
+                        body, Toast.LENGTH_SHORT).show();
+            } catch (UnsupportedEncodingException e) {
+                // exception
+            }
+
+            progressDialog.dismiss();
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> param = new HashMap<>();
+                param.put("password_old", oldpass);
+                param.put("password", newpass);
+                param.put("password_confirmation", confirmpass);
+                return param;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Accept", "application/json");
+                return params;
+            }
+        };
+        request.setRetryPolicy(
+                new DefaultRetryPolicy(30000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        MySingleton.getmInstance(EditPasswordActivity.this).
+                addToRequestQueue(request);
     }
 }
