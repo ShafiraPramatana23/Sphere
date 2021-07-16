@@ -33,7 +33,7 @@ import java.util.Objects;
 public class EditPasswordActivity extends AppCompatActivity {
 
     TextView oldpass, newpass, confirmpass;
-    ImageView showPassEditPass;
+    ImageView showPassEditPass1, showPassEditPass2, showPassEditPass3;
     Button btnEditPass;
     SharedPreferences sharedPreferences;
 
@@ -46,7 +46,9 @@ public class EditPasswordActivity extends AppCompatActivity {
         newpass = findViewById(R.id.newPassword);
         confirmpass = findViewById(R.id.confirmPassword);
         btnEditPass = findViewById(R.id.btnEditPassword);
-        showPassEditPass = findViewById(R.id.icPassEdit);
+        showPassEditPass1 = findViewById(R.id.icPassEdit1);
+        showPassEditPass2 = findViewById(R.id.icPassEdit2);
+        showPassEditPass3 = findViewById(R.id.icPassEdit3);
         sharedPreferences = getSharedPreferences("UserInfo",
                 Context.MODE_PRIVATE);
 
@@ -54,24 +56,36 @@ public class EditPasswordActivity extends AppCompatActivity {
         newpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         confirmpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
 
-        showPassEditPass.setOnClickListener(new View.OnClickListener() {
+        showPassEditPass1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Integer inputType1 = oldpass.getInputType();
-                Integer inputType2 = newpass.getInputType();
-                Integer inputType3 = confirmpass.getInputType();
 
                 if (inputType1 == InputType.TYPE_CLASS_TEXT) {
                     oldpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
                 } else {
                     oldpass.setInputType(InputType.TYPE_CLASS_TEXT);
                 }
+            }
+        });
+
+        showPassEditPass2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer inputType2 = newpass.getInputType();
 
                 if (inputType2 == InputType.TYPE_CLASS_TEXT) {
                     newpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
                 } else {
                     newpass.setInputType(InputType.TYPE_CLASS_TEXT);
                 }
+            }
+        });
+
+        showPassEditPass3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Integer inputType3 = confirmpass.getInputType();
 
                 if (inputType3 == InputType.TYPE_CLASS_TEXT) {
                     confirmpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
@@ -115,6 +129,7 @@ public class EditPasswordActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(false);
         progressDialog.show();
         String uRl = "https://sphere-apps.herokuapp.com/api/auth/edit-password";
+
 
     }
 }
