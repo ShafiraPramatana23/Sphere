@@ -145,7 +145,7 @@ public class HomeFragment extends Fragment {
 
                 System.out.println("oii address: "+address);
 
-                if (!address.isEmpty()) {
+                if (!address.isEmpty() && !latitude.isEmpty() && !longitude.isEmpty()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
