@@ -6,12 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.sphere.R;
 import com.example.sphere.ui.profile.model.MyReportList;
 
@@ -36,21 +39,26 @@ public class MyReportAdapter extends RecyclerView.Adapter<MyReportAdapter.UserVi
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
-//        holder.tvTitle.setText(dataList.get(position).getTitle());
-//        holder.tvAuthor.setText("Penulis : " + dataList.get(position).getAuthor());
-//        holder.tvSinopsis.setText(dataList.get(position).getSinopsis());
-//        holder.iv.setImageResource(dataList.get(position).getImage());
-//        holder.cv.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent myIntent = new Intent(context, DetailActivity.class);
-//                myIntent.putExtra("title", dataList.get(position).getTitle());
-//                myIntent.putExtra("author", dataList.get(position).getAuthor());
-//                myIntent.putExtra("sinopsis", dataList.get(position).getSinopsis());
-//                myIntent.putExtra("img", dataList.get(position).getImage());
-//                context.startActivity(myIntent);
-//            }
-//        });
+        Glide.with(context)
+                .load(dataList.get(position).getImage())
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .into(holder.ivMaps);
+
+        holder.tvTitle.setText(dataList.get(position).getTitle());
+        holder.tvDate.setText(dataList.get(position).getDate());
+        holder.tvLocation.setText(dataList.get(position).getAddress());
+        holder.tvCtg.setText(dataList.get(position).getCategory());
+        holder.tvDesc.setText(dataList.get(position).getAddress());
+//        holder.ivMaps.setImageResource(dataList.get(position).getImage());
+        holder.ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dataList.get(position).setExpandable(!dataList.get(position).getExpandable());
+                notifyItemChanged(position);
+                holder.llDetail.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -59,18 +67,21 @@ public class MyReportAdapter extends RecyclerView.Adapter<MyReportAdapter.UserVi
     }
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvTitle, tvAuthor, tvSinopsis;
-        private ImageView iv;
-        private CardView cv;
+        private TextView tvTitle, tvDate, tvLocation, tvCtg, tvDesc;
+        private LinearLayout llDetail;
+        private ImageView ivBack, ivMaps;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
 
-//            tvTitle = itemView.findViewById(R.id.txt_title);
-//            tvAuthor = itemView.findViewById(R.id.txt_author);
-//            tvSinopsis = itemView.findViewById(R.id.txt_sinopsis);
-//            iv = itemView.findViewById(R.id.iv);
-//            cv = itemView.findViewById(R.id.cardView);
+            tvTitle = itemView.findViewById(R.id.tvTitle);
+            tvLocation = itemView.findViewById(R.id.tvLocation);
+            tvDate = itemView.findViewById(R.id.tvDate);
+            llDetail = itemView.findViewById(R.id.llDetail);
+            tvCtg = itemView.findViewById(R.id.tvCtg);
+            tvDesc = itemView.findViewById(R.id.tvDesc);
+            ivBack = itemView.findViewById(R.id.ivBack);
+            ivMaps = itemView.findViewById(R.id.ivMaps);
         }
     }
 }
