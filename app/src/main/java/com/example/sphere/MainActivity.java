@@ -26,15 +26,10 @@ import android.widget.Toast;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
-import com.example.sphere.services.MyService;
-import com.example.sphere.services.NotificationReceiver;
-import com.example.sphere.ui.auth.LoginActivity;
 import com.example.sphere.util.MySingleton;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.onesignal.OneSignal;
 
 import androidx.annotation.NonNull;
@@ -50,10 +45,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -96,14 +87,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         sharedPreferences = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        /*String loginStatus = sharedPreferences.getString("token", "");
-        if (loginStatus.isEmpty()) {
-            startActivity(new Intent(MainActivity.
-                    this, LoginActivity.class));
-            finish();
-        }*/
-
-//        checkPermission();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -145,52 +128,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         dialog.show();
     }
 
-    private void checkPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    1);
-        } else {
-            getLocation();
-        }
-    }
-
-    private void getLocation() {
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String bestProvider = String.valueOf(locationManager.getBestProvider(criteria, true)).toString();
-
-        //You can still do this if you like, you might get lucky:
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(bestProvider);
-        if (location != null) {
-            Log.e("TAG", "GPS is on");
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-
-            editor.putString("latitude", String.valueOf(latitude));
-            editor.putString("longitude", String.valueOf(longitude));
-            editor.apply();
-
-            Toast.makeText(MainActivity.this, "latitude:" + latitude + " longitude:" + longitude, Toast.LENGTH_SHORT).show();
-
-            getLocationAdress();
-        } else {
-//            locationManager.requestLocationUpdates(bestProvider, 1000, 0, this);
-        }
-    }
-
     private void getLocationAdress() {
-        /*final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Tunggu ....");
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setIndeterminate(false);
-        progressDialog.show();*/
         String uRl = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + longitude + "," + latitude + ".json?types=poi&access_token=" + getString(R.string.mapbox_access_token);
         System.out.println("URL nyaaa: " + uRl);
         StringRequest request = new StringRequest(Request.Method.GET,
@@ -218,13 +156,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        System.out.println("OMG: " + e.toString());
                     }
-//                    progressDialog.dismiss();
                 }, error -> {
-            System.out.println("dapeni: " + error.toString());
             Toast.makeText(this, error.toString(), Toast.LENGTH_SHORT).show();
-//            progressDialog.dismiss();
         });
         request.setRetryPolicy(
                 new DefaultRetryPolicy(30000,
@@ -251,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == 1) {
-//            getLocation();
             if (mLocation == null) {
                 startLocationUpdates();
             }
@@ -263,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (location != null) {
             latitude = location.getLatitude();
             longitude = location.getLongitude();
-//            Toast.makeText(this, String.valueOf(latitude), Toast.LENGTH_SHORT).show();
 
             getLocationAdress();
 
@@ -289,8 +221,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             startLocationUpdates();
         }
         if (mLocation != null) {
-// mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
-//mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
+            latitude = mLocation.getLatitude();
+            longitude = mLocation.getLongitude();
         } else {
             Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
         }
@@ -338,6 +270,5 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
                 mLocationRequest, this);
-        Log.d("reque", "--->>>>");
     }
 }

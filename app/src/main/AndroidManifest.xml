@@ -33,12 +33,6 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <service
-            android:name=".services.MyService"
-            android:label="MyService"></service>
-
-        <receiver android:name=".services.NotificationReceiver" />
-
         <activity
             android:name=".SplashActivity"
             android:label="@string/app_name"
