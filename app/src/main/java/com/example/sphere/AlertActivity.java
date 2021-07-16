@@ -50,6 +50,7 @@ public class AlertActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     //kembali ke
+                    finish();
                 }
             });
         } else if (menu.equals("register")) {

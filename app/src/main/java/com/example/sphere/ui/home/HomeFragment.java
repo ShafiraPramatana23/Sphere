@@ -34,6 +34,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.sphere.MainActivity;
 import com.example.sphere.R;
 import com.example.sphere.SplashActivity;
+import com.example.sphere.ui.auth.EditPasswordActivity;
 import com.example.sphere.ui.auth.LoginActivity;
 import com.example.sphere.ui.profile.MyReportActivity;
 import com.example.sphere.util.MySingleton;
@@ -111,7 +112,7 @@ public class HomeFragment extends Fragment {
         ivNotif.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MyReportActivity.class);
+                Intent intent = new Intent(getActivity(), EditPasswordActivity.class);
                 getActivity().startActivity(intent);
             }
         });

@@ -36,9 +36,11 @@ import java.util.Objects;
 public class EditPasswordActivity extends AppCompatActivity {
 
     TextView oldpass, newpass, confirmpass;
-    ImageView showPassEditPass1, showPassEditPass2, showPassEditPass3;
+    ImageView showPassEditPass1, showPassEditPass2, showPassEditPass3, ivBack;
     Button btnEditPass;
     SharedPreferences sharedPreferences;
+
+    String token = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +54,22 @@ public class EditPasswordActivity extends AppCompatActivity {
         showPassEditPass1 = findViewById(R.id.icPassEdit1);
         showPassEditPass2 = findViewById(R.id.icPassEdit2);
         showPassEditPass3 = findViewById(R.id.icPassEdit3);
+        ivBack = findViewById(R.id.ivBack);
+
         sharedPreferences = getSharedPreferences("UserInfo",
                 Context.MODE_PRIVATE);
+        token = sharedPreferences.getString("token", "");
 
         oldpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         newpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
         confirmpass.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditPasswordActivity.super.onBackPressed();
+            }
+        });
 
         showPassEditPass1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,8 +155,7 @@ public class EditPasswordActivity extends AppCompatActivity {
                                     jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         } else {
                             Intent m = new Intent(EditPasswordActivity.this, AlertActivity.class);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("token", jsonObject.getString("token"));
+                            m.putExtra("menu", "password");
                             startActivity(m);
                             finish();
                         }
@@ -178,6 +189,7 @@ public class EditPasswordActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("Accept", "application/json");
+                params.put("Authorization", "Bearer " + token);
                 return params;
             }
         };
