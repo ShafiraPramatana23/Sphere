@@ -143,6 +143,8 @@ public class EditPasswordActivity extends AppCompatActivity {
                                     jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                         } else {
                             Intent m = new Intent(EditPasswordActivity.this, AlertActivity.class);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("token", jsonObject.getString("token"));
                             startActivity(m);
                             finish();
                         }
