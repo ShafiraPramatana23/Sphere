@@ -74,6 +74,7 @@ public class AlertActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent m = new Intent(AlertActivity.this, MyReportActivity.class);
+                    m.putExtra("type", "lapor");
                     startActivity(m);
                     finish();
                 }
