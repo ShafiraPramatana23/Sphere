@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.sphere.R;
 import com.example.sphere.ui.profile.model.MyReportList;
+import com.example.sphere.util.DateFormatter;
 
 import java.util.ArrayList;
 
@@ -46,19 +47,26 @@ public class MyReportAdapter extends RecyclerView.Adapter<MyReportAdapter.UserVi
                 .into(holder.ivMaps);
 
         holder.tvTitle.setText(dataList.get(position).getTitle());
-        holder.tvDate.setText(dataList.get(position).getDate());
+        holder.tvDate.setText(new DateFormatter().convertDate(dataList.get(position).getDate()));
         holder.tvLocation.setText(dataList.get(position).getAddress());
         holder.tvCtg.setText(dataList.get(position).getCategory());
         holder.tvDesc.setText(dataList.get(position).getAddress());
-//        holder.ivMaps.setImageResource(dataList.get(position).getImage());
+
         holder.ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dataList.get(position).setExpandable(!dataList.get(position).getExpandable());
                 notifyItemChanged(position);
-                holder.llDetail.setVisibility(View.VISIBLE);
             }
         });
+
+        if (!dataList.get(position).getExpandable()) {
+            holder.llDetail.setVisibility(View.GONE);
+            holder.ivBack.setRotation(270);
+        } else {
+            holder.llDetail.setVisibility(View.VISIBLE);
+            holder.ivBack.setRotation(90);
+        }
     }
 
     @Override
