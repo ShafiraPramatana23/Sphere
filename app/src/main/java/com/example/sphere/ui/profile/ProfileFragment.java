@@ -45,6 +45,9 @@ public class ProfileFragment extends Fragment {
     LinearLayout LLmyakun, LLlaporan, LLsandi, LLKeluar, ivBack;
     SharedPreferences sharedPreferences;
     private String token = "";
+    private String name = "";
+    private String email = "";
+    private String phone = "";
 
     private ProfileViewModel profileViewModel;
 
@@ -67,6 +70,9 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent Akunsaya = new Intent(getContext(), EditProfileActivity.class);
+                Akunsaya.putExtra("name", name);
+                Akunsaya.putExtra("email", email);
+                Akunsaya.putExtra("phone", phone);
                 startActivity(Akunsaya);
             }
         });
@@ -112,7 +118,9 @@ public class ProfileFragment extends Fragment {
                     try {
 
                             JSONObject obj = new JSONObject(response);
-                            String name = obj.getString("name");
+                            name = obj.getString("name");
+                            email = obj.getString("email");
+                            phone = obj.getString("phone");
 
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("name",name);

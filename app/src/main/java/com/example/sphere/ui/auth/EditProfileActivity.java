@@ -51,12 +51,22 @@ public class EditProfileActivity extends AppCompatActivity {
         token = sharedPreferences.getString("token", "");
         String name = sharedPreferences.getString("name", "");
 
+        Intent intent = getIntent();
+        String emailEdit = intent.getStringExtra("email");
+        String phone = intent.getStringExtra("phone");
+        if (phone == null || phone.equals("null")){
+            phone = "";
+        }
+
         txtUsername = findViewById(R.id.txtUsername);
         fullname = findViewById(R.id.fullname);
         email = findViewById(R.id.email);
         telepon = findViewById(R.id.telepon);
         btnEditProfile = findViewById(R.id.btnEditProfile);
         ivBack = findViewById(R.id.ivBack);
+        fullname.setText(name);
+        email.setText(emailEdit);
+        telepon.setText(phone);
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override

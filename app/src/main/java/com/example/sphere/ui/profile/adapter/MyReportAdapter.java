@@ -50,7 +50,7 @@ public class MyReportAdapter extends RecyclerView.Adapter<MyReportAdapter.UserVi
         holder.tvDate.setText(new DateFormatter().convertDate(dataList.get(position).getDate()));
         holder.tvLocation.setText(dataList.get(position).getAddress());
         holder.tvCtg.setText(dataList.get(position).getCategory());
-        holder.tvDesc.setText(dataList.get(position).getAddress());
+        holder.tvDesc.setText(dataList.get(position).getDesc());
 
         holder.ivBack.setOnClickListener(new View.OnClickListener() {
             @Override

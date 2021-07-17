@@ -55,7 +55,6 @@
                         android:hint="Email"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:text="marr@email.com"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey_placeholder"
                         android:textSize="@dimen/_12sdp" />
@@ -78,7 +77,6 @@
                         android:fontFamily="@font/redhat_regular"
                         android:hint="Kata Sandi"
                         android:maxLines="1"
-                        android:text="12345678"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey_placeholder"
                         android:textSize="@dimen/_12sdp" />
