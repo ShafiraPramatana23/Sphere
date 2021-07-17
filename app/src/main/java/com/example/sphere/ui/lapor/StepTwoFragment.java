@@ -365,7 +365,7 @@ public class StepTwoFragment extends Fragment {
                             Intent m = new Intent(getContext(), AlertActivity.class);
                             m.putExtra("menu", "report");
                             startActivity(m);
-                            getActivity().finish();
+//                            getActivity().finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

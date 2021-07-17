@@ -18,6 +18,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.example.sphere.AlertActivity;
+import com.example.sphere.MainActivity;
 import com.example.sphere.R;
 import com.example.sphere.ui.auth.EditPasswordActivity;
 import com.example.sphere.ui.home.WaterLevelActivity;
@@ -41,6 +42,7 @@ public class MyReportActivity extends AppCompatActivity {
     private MyReportAdapter adapter;
     private ArrayList<MyReportList> list;
     private String token = "";
+    private String type = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,9 @@ public class MyReportActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserInfo", Context.MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
+
+        Intent intent = getIntent();
+        type = intent.getStringExtra("type");
 
         ImageView ivBack = findViewById(R.id.ivBack);
         recyclerView = findViewById(R.id.rv);
@@ -65,7 +70,7 @@ public class MyReportActivity extends AppCompatActivity {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MyReportActivity.super.onBackPressed();
+                onBackPressed();
             }
         });
     }
@@ -133,5 +138,17 @@ public class MyReportActivity extends AppCompatActivity {
 
         MySingleton.getmInstance(MyReportActivity.this).
                 addToRequestQueue(request);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (type != null && type.equals("lapor")) {
+            Intent m = new Intent(this, MainActivity.class);
+            m.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(m);
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
